@@ -48,6 +48,7 @@ namespace VirtualController
                 this.controllerWindow = new Window()
                 {
                     Content = this.virtualController.Canvas,
+                    Title = "Virtual Controller"
                 };
 
                 // WinUI doesn't have ResizeToFit so we need to resize the window manually accounting for DPI
