@@ -13,8 +13,12 @@
     <MicaBackdrop />
   </Window.SystemBackdrop>
 
-  <StackPanel>
-    <Button Content="Open Virtual Controller" Click="OpenVirtualController_Click" />
-    <TextBox Text="{Binding LastErrorText}" />
-  </StackPanel>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Button Grid.Row="0" Content="Open Virtual Controller" Click="OpenVirtualController_Click" HorizontalAlignment="Center" />
+    <TextBlock Grid.Row="1" Text="{Binding LastErrorText}" />
+  </Grid>
 </Window>

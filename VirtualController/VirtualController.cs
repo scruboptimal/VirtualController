@@ -14,9 +14,6 @@ namespace VirtualController
 {
     internal class VirtualController: IDisposable
     {
-        const string layerBackground = "layerBackground";
-        const string layerButtons = "layerButtons";
-
         static Dictionary<string, GamepadButton> buttonMappings = new Dictionary<string, GamepadButton>()
         {
             { "buttonA", GamepadButton.A },
@@ -58,7 +55,7 @@ namespace VirtualController
                 throw new InvalidOperationException();
             }
 
-            XmlNode? backgroundLayerNode = SVGHelpers.FindChild(root, layerBackground);
+            XmlNode? backgroundLayerNode = SVGHelpers.FindChild(root, "layerBackground");
             XmlNode? backgroundRectNode = SVGHelpers.FindChild(backgroundLayerNode, "background");
 
             double width = double.Parse(backgroundRectNode?.Attributes?.GetNamedItem("width")?.Value ?? "0");
@@ -70,7 +67,8 @@ namespace VirtualController
                 Background = new SolidColorBrush(SVGHelpers.GetColor(backgroundRectNode)),
             };
 
-            XmlNode? buttonLayer = SVGHelpers.FindChild(root, layerButtons);
+
+            XmlNode? buttonLayer = SVGHelpers.FindChild(root, "layerButtons");
             if (buttonLayer == null) { throw new KeyNotFoundException(); }
             for (int i = 0; i < buttonLayer.ChildNodes.Count; i++)
             {

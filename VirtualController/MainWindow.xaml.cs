@@ -1,6 +1,8 @@
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.Storage.Pickers;
 using System;
+using Windows.Graphics.Display;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -12,6 +14,7 @@ namespace VirtualController
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private VirtualController? virtualController;
         private Window? controllerWindow;
 
         public MainWindow()
@@ -41,12 +44,19 @@ namespace VirtualController
                     throw new Exception("No svg file selected");
                 }
 
-                VirtualController vc = new VirtualController(result.Path);
+                this.virtualController = new VirtualController(result.Path);
                 this.controllerWindow = new Window()
                 {
-                    Content = vc.Canvas,
+                    Content = this.virtualController.Canvas,
                 };
-                this.controllerWindow.AppWindow.Resize(new Windows.Graphics.SizeInt32((int)vc.Canvas.Width, (int)vc.Canvas.Height));
+
+                // WinUI doesn't have ResizeToFit so we need to resize the window manually accounting for DPI
+                var displayInfo = DisplayInformationInterop.GetForWindow((nint)this.controllerWindow.AppWindow.Id.Value);
+                var windowSize = new Windows.Graphics.SizeInt32(
+                    (int)(this.virtualController.Canvas.Width * displayInfo.RawPixelsPerViewPixel),
+                    (int)(this.virtualController.Canvas.Height * displayInfo.RawPixelsPerViewPixel));
+                this.controllerWindow.AppWindow.ResizeClient(windowSize);
+
                 this.controllerWindow.Activate();
             }
             catch (Exception ex)
