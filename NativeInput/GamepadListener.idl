@@ -1,0 +1,9 @@
+namespace NativeInput
+{
+    [default_interface]
+    runtimeclass GamepadListener 
+    {
+        GamepadListener();
+        Int32 MyProperty;
+    }
+}
