@@ -1,9 +1,34 @@
 namespace NativeInput
 {
-    [default_interface]
-    runtimeclass GamepadListener 
-    {
-        GamepadListener();
-        Int32 MyProperty;
-    }
+	// Enum for gamepad buttons
+	enum GamepadButton
+	{
+		A = 0,
+		B = 1,
+		X = 2,
+		Y = 3,
+		DPadUp = 4,
+		DPadDown = 5,
+		DPadLeft = 6,
+		DPadRight = 7,
+		Start = 8,
+		Back = 9,
+		LeftShoulder = 10,
+		RightShoulder = 11,
+		LeftTrigger = 12,
+		RightTrigger = 13,
+		LeftThumb = 14,
+		RightThumb = 15,
+	};
+
+	delegate void GamepadEventHandler(GamepadButton button, Boolean isPressed);
+
+	[default_interface]
+	runtimeclass GamepadListener
+	{
+		GamepadListener();
+
+		HRESULT StartListening(GamepadEventHandler handler, Int32 controllerIndex);
+		HRESULT StopListening();
+	}
 }

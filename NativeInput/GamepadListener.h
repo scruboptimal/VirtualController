@@ -8,8 +8,12 @@ namespace winrt::NativeInput::implementation
     {
         GamepadListener() = default;
 
-        int32_t MyProperty();
-        void MyProperty(int32_t value);
+        HRESULT StartListening(GamepadEventHandler handler, int32_t controllerIndex);
+        HRESULT StopListening();
+
+    private:
+        std::thread m_listenerThread;
+        std::atomic<bool> m_listening{ false };
     };
 }
 
