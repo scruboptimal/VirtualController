@@ -3,28 +3,29 @@ import "ocidl.idl";
 
 enum GamepadButton
 {
-    A = 0,
-    B = 1,
-    X = 2,
-    Y = 3,
-    DPadUp = 4,
-    DPadDown = 5,
-    DPadLeft = 6,
-    DPadRight = 7,
-    Start = 8,
-    Back = 9,
-    LeftShoulder = 10,
-    RightShoulder = 11,
-    LeftTrigger = 12,
-    RightTrigger = 13,
-    LeftThumb = 14,
-    RightThumb = 15,
+    None = 0x0,
+    A = 0x1,
+    B = 0x2,
+    X = 0x4,
+    Y = 0x8,
+    DPadUp = 0x10,
+    DPadDown = 0x20,
+    DPadLeft = 0x40,
+    DPadRight = 0x80,
+    Start = 0x100,
+    Back = 0x200,
+    LeftShoulder = 0x400,
+    RightShoulder = 0x800,
+    LeftTrigger = 0x1000,
+    RightTrigger = 0x2000,
+    LeftThumb = 0x4000,
+    RightThumb = 0x8000,
 };
 
 [uuid(F8A6D3A0-979C-46E9-A608-B4971AF94C9E)]
 interface IGamepadEventHandler : IUnknown
 {
-    HRESULT HandleGamepadEvent(enum GamepadButton button, boolean isPressed);
+    HRESULT HandleGamepadState(enum GamepadButton state, int frameIndex);
 };
 
 [uuid(0AA0F808-F2CC-4DAE-95B1-397927C0A246)]

@@ -11,6 +11,7 @@ namespace VirtualControllerNative
         virtual HRESULT StopListening() override;
 
     private:
+        int m_frameIndex = 0;
         bool m_listening = false;
         std::thread m_listenerThread;
     };

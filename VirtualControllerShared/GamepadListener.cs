@@ -3,7 +3,7 @@ using VirtualControllerNative.Interop;
 
 namespace VirtualControllerShared
 {
-    public delegate void GamepadEventHandler(GamepadButton button, bool isPressed);
+    public delegate void GamepadEventHandler(GamepadButton state, int frameIndex);
 
     public class GamepadListener : IGamepadEventHandler
     {
@@ -28,9 +28,9 @@ namespace VirtualControllerShared
             m_listener.StopListening();
         }
 
-        public void HandleGamepadEvent(GamepadButton button, sbyte isPressed)
+        public void HandleGamepadState(GamepadButton state, int frameIndex)
         {
-            m_handler(button, isPressed != 0);
+            m_handler(state, frameIndex);
         }
 
         static class NativeMethods

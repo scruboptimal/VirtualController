@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 using VirtualControllerNative.Interop;
 using VirtualControllerShared;
@@ -12,7 +13,7 @@ using Windows.UI;
 
 namespace VirtualController
 {
-    internal class VirtualController: IDisposable
+    internal class VirtualController : IDisposable
     {
         static Dictionary<string, GamepadButton> buttonMappings = new Dictionary<string, GamepadButton>()
         {
@@ -26,13 +27,14 @@ namespace VirtualController
             { "buttonUp", GamepadButton.DPadUp },
             { "buttonLS", GamepadButton.LeftThumb },
             { "buttonRS", GamepadButton.RightThumb },
-            { "buttonLB", GamepadButton.LeftShoulder},
+            { "buttonLB", GamepadButton.LeftShoulder },
             { "buttonRB", GamepadButton.RightShoulder },
-            { "buttonLT", GamepadButton.LeftTrigger},
-            { "buttonRT", GamepadButton.RightTrigger},
+            { "buttonLT", GamepadButton.LeftTrigger },
+            { "buttonRT", GamepadButton.RightTrigger },
         };
 
         static SolidColorBrush pressedBrush = new SolidColorBrush(Color.FromArgb(0xff, 0xff, 0xff, 0xff)); // white
+        static List<GamepadButton> buttons = Enum.GetValues<GamepadButton>().OfType<GamepadButton>().Where(x => x != GamepadButton.None).ToList();
 
         Dictionary<GamepadButton, Ellipse> controllerButtons = new();
 
@@ -109,17 +111,20 @@ namespace VirtualController
             this.listener.StartListening();
         }
 
-        void OnGamepadEvent(GamepadButton button, bool isPressed)
+        void OnGamepadEvent(GamepadButton state, int frameIndex)
         {
-            if (!this.controllerButtons.TryGetValue(button, out var controllerButton))
+            foreach (var button in buttons)
             {
-                return;
-            }
+                if (!this.controllerButtons.TryGetValue(button, out var controllerButton))
+                {
+                    continue;
+                }
 
-            this.dispatcher.TryEnqueue(() =>
-            {
-                controllerButton.Fill = isPressed ? pressedBrush : controllerButton.Stroke;
-            });
+                this.dispatcher.TryEnqueue(() =>
+                {
+                    controllerButton.Fill = state.HasFlag(button) ? pressedBrush : controllerButton.Stroke;
+                });
+            }
         }
 
         protected virtual void Dispose(bool disposing)

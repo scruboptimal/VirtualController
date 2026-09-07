@@ -30,6 +30,7 @@ namespace VirtualControllerNative
         if (!handler) { return E_POINTER; }
         if (m_listening) { return S_OK; }
 
+        m_frameIndex = 0;
         m_listening = true;
         m_listenerThread = std::thread(
             [this, controllerIndex, handler]()
@@ -41,42 +42,34 @@ namespace VirtualControllerNative
                     if (XInputGetState(controllerIndex, &state) == ERROR_SUCCESS &&
                         state.dwPacketNumber != prevState.dwPacketNumber)
                     {
+                        GamepadButton result = GamepadButton::None;
                         for (const auto& pair : ButtonMap)
                         {
                             const GamepadButton button = pair.first;
                             const DWORD mask = pair.second;
 
-                            const bool wasPressed = (prevState.Gamepad.wButtons & mask) != 0;
-                            const bool isPressed = (state.Gamepad.wButtons & mask) != 0;
-                            if (wasPressed != isPressed)
+                            if (state.Gamepad.wButtons & mask)
                             {
-                                handler->HandleGamepadEvent(button, isPressed);
+                                result = (GamepadButton)(result | button);
                             }
                         }
 
+                        if (state.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
                         {
-                            // Left trigger
-                            const bool wasPressed = prevState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
-                            const bool isPressed = state.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
-                            if (wasPressed != isPressed)
-                            {
-                                handler->HandleGamepadEvent(GamepadButton::LeftTrigger, isPressed);
-                            }
-                        }
-                        {
-                            // Right trigger
-                            const bool wasPressed = prevState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
-                            const bool isPressed = state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
-                            if (wasPressed != isPressed)
-                            {
-                                handler->HandleGamepadEvent(GamepadButton::RightTrigger, isPressed);
-                            }
+                            result = (GamepadButton)(result | GamepadButton::LeftTrigger);
                         }
 
+                        if (state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+                        {
+                            result = (GamepadButton)(result | GamepadButton::RightTrigger);
+                        }
+
+                        (void)handler->HandleGamepadState(result, m_frameIndex);
                         prevState = state;
                     }
 
-                    Sleep(10); // Polling interval
+                    m_frameIndex++;
+                    Sleep(16); // Polling interval
                 }
             });
 
