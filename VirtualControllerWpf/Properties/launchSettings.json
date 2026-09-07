@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "VirtualControllerWpf": {
+      "commandName": "Project",
+      "debugEngines": "managed,native"
+    }
+  }
+}
