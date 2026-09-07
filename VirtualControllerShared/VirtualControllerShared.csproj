@@ -7,4 +7,21 @@
     <Platforms>x64</Platforms>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <InteropLibraryName>VirtualControllerNative.Interop</InteropLibraryName>
+    <TlbImpPath>$(SDK40ToolsPath)tlbimp.exe</TlbImpPath>
+    <TypeLibrary>..\VirtualControllerNative\$(Platform)\$(Configuration)\VirtualControllerNative.tlb</TypeLibrary>
+    <InteropOutput>$(InteropLibraryName).dll</InteropOutput>
+  </PropertyGroup>
+  
+  <Target Name="GenerateInteropAssembly" BeforeTargets="BeforeBuild">
+    <Message Text="Generating interop assembly from $(TypeLibrary)..." Importance="high" />
+    <Exec Command="&quot;$(TlbImpPath)&quot; &quot;$(TypeLibrary)&quot; /out:&quot;$(InteropOutput)&quot;" />
+  </Target>
+  <ItemGroup>
+    <Reference Include="VirtualControllerNative.Interop">
+      <HintPath>VirtualControllerNative.Interop.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

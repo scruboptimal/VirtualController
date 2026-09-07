@@ -1,10 +1,16 @@
 ﻿using System.Globalization;
 using System.Xml;
+using VirtualControllerNative.Interop;
 
 namespace VirtualControllerShared
 {
     public static class SVGHelpers
     {
+        public static void Temp()
+        {
+            IGamepadListener listener;
+        }
+
         public static byte[] GetFillArgb(XmlNode? node)
         {
             string? style = node?.Attributes?.GetNamedItem("style")?.Value;

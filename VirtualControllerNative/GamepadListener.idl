@@ -1,0 +1,44 @@
+import "oaidl.idl";
+import "ocidl.idl";
+
+enum GamepadButton
+{
+    A = 0,
+    B = 1,
+    X = 2,
+    Y = 3,
+    DPadUp = 4,
+    DPadDown = 5,
+    DPadLeft = 6,
+    DPadRight = 7,
+    Start = 8,
+    Back = 9,
+    LeftShoulder = 10,
+    RightShoulder = 11,
+    LeftTrigger = 12,
+    RightTrigger = 13,
+    LeftThumb = 14,
+    RightThumb = 15,
+};
+
+[uuid(F8A6D3A0-979C-46E9-A608-B4971AF94C9E)]
+interface IGamepadEventHandler : IUnknown
+{
+    HRESULT HandleGamepadEvent(enum GamepadButton button, boolean isPressed);
+};
+
+[uuid(0AA0F808-F2CC-4DAE-95B1-397927C0A246)]
+interface IGamepadListener : IUnknown
+{
+    HRESULT StartListening(IGamepadEventHandler* handler, int controllerIndex);
+    HRESULT StopListening();
+};
+
+[uuid(0793D47D-06A5-41A1-B603-1F6189C53DCD)]
+library GamepadNative
+{
+    enum GamepadButton;
+
+    interface IGamepadEventHandler;
+    interface IGamepadListener;
+};

@@ -1,4 +1,5 @@
 ﻿#include "pch.h"
+#include "GamepadListener_h.h"
 #include "GamepadListener.h"
 
 #include <Xinput.h>
@@ -24,7 +25,7 @@ namespace VirtualControllerNative
     };
 
     static int frameIdx = 0;
-    HRESULT GamepadListener::StartListening(GamepadEventHandler handler, int32_t controllerIndex)
+    HRESULT GamepadListener::StartListening(IGamepadEventHandler* handler, int controllerIndex)
     {
         if (!handler) { return E_POINTER; }
         if (m_listening) { return S_OK; }
@@ -37,7 +38,8 @@ namespace VirtualControllerNative
                 while (m_listening)
                 {
                     XINPUT_STATE state = {};
-                    if (XInputGetState(controllerIndex, &state) == ERROR_SUCCESS)
+                    if (XInputGetState(controllerIndex, &state) == ERROR_SUCCESS &&
+                        state.dwPacketNumber != prevState.dwPacketNumber)
                     {
                         for (const auto& pair : ButtonMap)
                         {
@@ -48,7 +50,7 @@ namespace VirtualControllerNative
                             const bool isPressed = (state.Gamepad.wButtons & mask) != 0;
                             if (wasPressed != isPressed)
                             {
-                                handler(button, isPressed);
+                                handler->HandleGamepadEvent(button, isPressed);
                             }
                         }
 
@@ -58,7 +60,7 @@ namespace VirtualControllerNative
                             const bool isPressed = state.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
                             if (wasPressed != isPressed)
                             {
-                                handler(GamepadButton::LeftTrigger, isPressed);
+                                handler->HandleGamepadEvent(GamepadButton::LeftTrigger, isPressed);
                             }
                         }
                         {
@@ -67,7 +69,7 @@ namespace VirtualControllerNative
                             const bool isPressed = state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
                             if (wasPressed != isPressed)
                             {
-                                handler(GamepadButton::RightTrigger, isPressed);
+                                handler->HandleGamepadEvent(GamepadButton::RightTrigger, isPressed);
                             }
                         }
 
@@ -83,7 +85,11 @@ namespace VirtualControllerNative
 
     HRESULT GamepadListener::StopListening()
     {
-        if (!m_listening) return S_FALSE;
+        if (!m_listening)
+        {
+            return S_OK;
+        }
+
         m_listening = false;
 
         if (m_listenerThread.joinable())
@@ -93,4 +99,15 @@ namespace VirtualControllerNative
 
         return S_OK;
     }
+}
+
+EXTERN_C
+__declspec(dllexport)
+HRESULT CreateGamepadListener(IGamepadListener** listener)
+{
+    Microsoft::WRL::ComPtr<VirtualControllerNative::GamepadListener> tmpListener;
+    RETURN_IF_FAILED(MakeAndInitialize<VirtualControllerNative::GamepadListener>(&tmpListener));
+
+    *listener = tmpListener.Detach();
+    return S_OK;
 }

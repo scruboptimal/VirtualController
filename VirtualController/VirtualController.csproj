@@ -42,8 +42,17 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NativeInputProjection\NativeInputProjection.csproj" />
     <ProjectReference Include="..\VirtualControllerShared\VirtualControllerShared.csproj" />
+    <ProjectReference Include="..\VirtualControllerNative\VirtualControllerNative.vcxproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="VirtualControllerNative.Interop">
+      <HintPath>..\VirtualControllerShared\VirtualControllerNative.Interop.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <!--

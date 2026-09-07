@@ -12,4 +12,9 @@
 #include <unordered_map>
 #include <thread>
 
+#include <wrl/implements.h>
+using namespace Microsoft::WRL;
+
+#include <wil/result_macros.h>
+
 #endif //PCH_H

@@ -2,10 +2,6 @@
   <Configurations>
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="NativeInput/NativeInput.vcxproj" Id="7f63063e-2304-40b7-9f60-2a8fc5b41b85" />
-  <Project Path="NativeInputProjection/NativeInputProjection.csproj" Id="15db44ae-5914-4343-901c-55cdfaa3e5fc">
-    <Platform Project="x64" />
-  </Project>
   <Project Path="VirtualController/VirtualController.csproj">
     <Platform Project="x64" />
     <Deploy />

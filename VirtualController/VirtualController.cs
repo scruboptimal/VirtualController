@@ -2,12 +2,12 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
-using NativeInput;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Xml;
+using VirtualControllerNative.Interop;
 using VirtualControllerShared;
 using Windows.UI;
 
@@ -40,11 +40,13 @@ namespace VirtualController
         public Canvas Canvas { get; private set; }
 
         private bool disposedValue;
-        private GamepadListener listener = new GamepadListener();
+        private GamepadListener listener;
         private DispatcherQueue dispatcher;
 
         public VirtualController(string svgPath)
         {
+            listener = new GamepadListener(OnGamepadEvent, 0);
+
             XmlDocument xmlDoc = new();
             xmlDoc.Load(svgPath);
 
@@ -105,7 +107,7 @@ namespace VirtualController
                 }
             }
 
-            this.listener.StartListening(OnGamepadEvent, 0);
+            this.listener.StartListening();
         }
 
         void OnGamepadEvent(GamepadButton button, bool isPressed)
