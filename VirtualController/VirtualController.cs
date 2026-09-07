@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Xml;
 using VirtualControllerNative.Interop;
 using VirtualControllerShared;
@@ -33,7 +32,7 @@ namespace VirtualController
             { "buttonRT", GamepadButton.RightTrigger},
         };
 
-        static SolidColorBrush pressedBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(0xff, 0xff, 0xff, 0xff)); // white
+        static SolidColorBrush pressedBrush = new SolidColorBrush(Color.FromArgb(0xff, 0xff, 0xff, 0xff)); // white
 
         Dictionary<GamepadButton, Ellipse> controllerButtons = new();
 
