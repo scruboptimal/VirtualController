@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Xml;
+using VirtualControllerShared;
 using Windows.UI;
 
 namespace VirtualController
@@ -60,11 +61,12 @@ namespace VirtualController
 
             double width = double.Parse(backgroundRectNode?.Attributes?.GetNamedItem("width")?.Value ?? "0");
             double height = double.Parse(backgroundRectNode?.Attributes?.GetNamedItem("height")?.Value ?? "0");
+            byte[] canvasFill = SVGHelpers.GetFillArgb(backgroundRectNode);
             this.Canvas = new Canvas()
             {
                 Width = width,
                 Height = height,
-                Background = new SolidColorBrush(SVGHelpers.GetColor(backgroundRectNode)),
+                Background = new SolidColorBrush(Color.FromArgb(canvasFill[0], canvasFill[1], canvasFill[2], canvasFill[3])),
             };
 
 
@@ -81,7 +83,8 @@ namespace VirtualController
                     double x = double.Parse(buttonNode?.Attributes?.GetNamedItem("cx")?.Value ?? "0");
                     double y = double.Parse(buttonNode?.Attributes?.GetNamedItem("cy")?.Value ?? "0");
                     double r = double.Parse(buttonNode?.Attributes?.GetNamedItem("r")?.Value ?? "0");
-                    Color color = SVGHelpers.GetColor(buttonNode);
+                    byte[] buttonFill = SVGHelpers.GetFillArgb(buttonNode);
+                    Color color = Color.FromArgb(buttonFill[0], buttonFill[1], buttonFill[2], buttonFill[3]);
 
                     Ellipse e = new()
                     {

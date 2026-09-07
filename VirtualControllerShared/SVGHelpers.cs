@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Xml;
-using Windows.UI;
 
-namespace VirtualController
+namespace VirtualControllerShared
 {
-    internal static class SVGHelpers
+    public static class SVGHelpers
     {
-        public static Color GetColor(XmlNode? node)
+        public static byte[] GetFillArgb(XmlNode? node)
         {
             string? style = node?.Attributes?.GetNamedItem("style")?.Value;
             if (style == null) { throw new KeyNotFoundException(); }
@@ -19,7 +16,7 @@ namespace VirtualController
             byte r = byte.Parse(style.Substring(fillIdx + 0, 2), NumberStyles.HexNumber);
             byte g = byte.Parse(style.Substring(fillIdx + 2, 2), NumberStyles.HexNumber);
             byte b = byte.Parse(style.Substring(fillIdx + 4, 2), NumberStyles.HexNumber);
-            return Color.FromArgb(0xff, r, g, b);
+            return [0xff, r, g, b];
         }
 
         public static XmlNode? FindChild(XmlNode? root, string targetId)
@@ -40,7 +37,7 @@ namespace VirtualController
             return result;
         }
 
-        public static void IterateNode(XmlNode? parent, Func<XmlNode, bool> onChild)
+        private static void IterateNode(XmlNode? parent, Func<XmlNode, bool> onChild)
         {
             if (parent == null) { throw new KeyNotFoundException(); }
             for (int i = 0; i < parent.ChildNodes.Count; i++)

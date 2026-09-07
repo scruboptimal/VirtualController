@@ -26,8 +26,8 @@ namespace winrt::NativeInput::implementation
         {GamepadButton::Y,              XINPUT_GAMEPAD_Y}
     };
 
-	HRESULT GamepadListener::StartListening(GamepadEventHandler handler, int32_t controllerIndex)
-	{
+    HRESULT GamepadListener::StartListening(GamepadEventHandler handler, int32_t controllerIndex)
+    {
         if (!handler) { return E_POINTER; }
         if (m_listening) { return S_OK; }
 
@@ -81,10 +81,10 @@ namespace winrt::NativeInput::implementation
             });
 
         return S_OK;
-	}
+    }
 
-	HRESULT GamepadListener::StopListening()
-	{
+    HRESULT GamepadListener::StopListening()
+    {
         if (!m_listening) return S_FALSE;
         m_listening = false;
 
@@ -94,5 +94,5 @@ namespace winrt::NativeInput::implementation
         }
 
         return S_OK;
-	}
+    }
 }

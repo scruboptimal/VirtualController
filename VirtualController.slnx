@@ -10,6 +10,10 @@
     <Platform Project="x64" />
     <Deploy />
   </Project>
+  <Project Path="VirtualControllerShared/VirtualControllerShared.csproj" Id="bde3c609-04d9-475f-9954-a9818c50a22e">
+    <Platform Project="x64" />
+    <Build Solution="Release|*" Project="false" />
+  </Project>
   <Project Path="VirtualControllerWpf/VirtualControllerWpf.csproj" Id="9342e3b2-179b-42f8-8494-2fc4718666e5">
     <Platform Project="x64" />
   </Project>

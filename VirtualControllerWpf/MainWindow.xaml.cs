@@ -53,6 +53,7 @@ namespace VirtualControllerWpf
                     SizeToContent = SizeToContent.WidthAndHeight,
                 };
 
+                this.controllerWindow.Show();
                 this.controllerWindow.Activate();
             }
             catch (Exception ex)

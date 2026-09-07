@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NativeInputProjection\NativeInputProjection.csproj" />
+    <ProjectReference Include="..\VirtualControllerShared\VirtualControllerShared.csproj" />
   </ItemGroup>
 
   <!--
