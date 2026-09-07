@@ -1,12 +1,9 @@
 ﻿#include "pch.h"
 #include "GamepadListener.h"
-#if __has_include("GamepadListener.g.cpp")
-#include "GamepadListener.g.cpp"
-#endif
 
 #include <Xinput.h>
 
-namespace winrt::NativeInput::implementation
+namespace VirtualControllerNative
 {
     // Button mask mapping
     const std::unordered_map<GamepadButton, int32_t> ButtonMap = {
@@ -42,18 +39,6 @@ namespace winrt::NativeInput::implementation
                     XINPUT_STATE state = {};
                     if (XInputGetState(controllerIndex, &state) == ERROR_SUCCESS)
                     {
-                        WCHAR buf[50];
-                        if (prevState.dwPacketNumber != state.dwPacketNumber)
-                        {
-                            swprintf_s(buf, L"IDX %i PACKET %i\n", controllerIndex, state.dwPacketNumber);
-                            OutputDebugString(buf);
-                        }
-                        else
-                        {
-                            //swprintf_s(buf, L"NO_UPDATE, %i\n", frameIdx++);
-                            //OutputDebugString(buf);
-                        }
-
                         for (const auto& pair : ButtonMap)
                         {
                             const GamepadButton button = pair.first;
@@ -87,10 +72,6 @@ namespace winrt::NativeInput::implementation
                         }
 
                         prevState = state;
-                    }
-                    else
-                    {
-                        OutputDebugString(L"ERROR FROM XINPUTGETSTATE\n");
                     }
 
                     Sleep(10); // Polling interval
