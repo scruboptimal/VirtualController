@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "VirtualControllerWpf": {
-      "commandName": "Project",
-      "debugEngines": "managed,native",
-      "hotReloadEnabled": false
-    }
-  }
-}
