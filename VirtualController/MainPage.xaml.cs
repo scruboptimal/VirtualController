@@ -10,7 +10,6 @@ namespace VirtualController
 {
     public sealed partial class MainPage : Page
     {
-        private VirtualController? virtualController;
         private Window? controllerWindow;
         private Window owningWindow;
 
@@ -21,7 +20,7 @@ namespace VirtualController
             this.DataContext = this.ViewModel;
         }
 
-        public MainPageViewModel ViewModel = new MainPageViewModel();
+        public MainPageViewModel ViewModel { get; } = new MainPageViewModel();
 
         private async void OpenVirtualController_Click(object sender, RoutedEventArgs e)
         {
@@ -43,21 +42,12 @@ namespace VirtualController
                     throw new Exception("No svg file selected");
                 }
 
-                this.virtualController = new VirtualController(result.Path);
-                this.controllerWindow = new Window()
+                this.ViewModel.OpenController(result.Path);
+
+                if (this.ViewModel.OpenInNewWindow)
                 {
-                    Content = this.virtualController.Canvas,
-                    Title = "Virtual Controller"
-                };
-
-                // WinUI doesn't have ResizeToFit so we need to resize the window manually accounting for DPI
-                var displayInfo = DisplayInformationInterop.GetForWindow((nint)this.controllerWindow.AppWindow.Id.Value);
-                var windowSize = new Windows.Graphics.SizeInt32(
-                    (int)(this.virtualController.Canvas.Width * displayInfo.RawPixelsPerViewPixel),
-                    (int)(this.virtualController.Canvas.Height * displayInfo.RawPixelsPerViewPixel));
-                this.controllerWindow.AppWindow.ResizeClient(windowSize);
-
-                this.controllerWindow.Activate();
+                    this.controllerWindow = OpenControllerInNewWindow(this.ViewModel.Controller);
+                }
 
                 this.ViewModel.CanRecord = true;
             }
@@ -67,9 +57,34 @@ namespace VirtualController
             }
         }
 
+        private static Window OpenControllerInNewWindow(VirtualController? controller)
+        {
+            if (controller == null)
+            {
+                throw new ArgumentNullException(nameof(controller));
+            }
+
+            var controllerWindow = new Window()
+            {
+                Content = controller.Canvas,
+                Title = "Virtual Controller"
+            };
+
+            // WinUI doesn't have ResizeToFit so we need to resize the window manually accounting for DPI
+            var displayInfo = DisplayInformationInterop.GetForWindow((nint)controllerWindow.AppWindow.Id.Value);
+            var windowSize = new Windows.Graphics.SizeInt32(
+                (int)(controller.Canvas.Width * displayInfo.RawPixelsPerViewPixel),
+                (int)(controller.Canvas.Height * displayInfo.RawPixelsPerViewPixel));
+            controllerWindow.AppWindow.ResizeClient(windowSize);
+
+            controllerWindow.Activate();
+
+            return controllerWindow;
+        }
+
         private void ToggleRecording_Click(object sender, RoutedEventArgs e)
         {
-            this.ViewModel.IsRecording = !this.ViewModel.IsRecording;
+            this.ViewModel.ToggleRecording();
         }
     }
 

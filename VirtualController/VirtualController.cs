@@ -13,7 +13,7 @@ using Windows.UI;
 
 namespace VirtualController
 {
-    internal class VirtualController : IDisposable
+    public class VirtualController : IDisposable
     {
         static Dictionary<string, GamepadButton> buttonMappings = new Dictionary<string, GamepadButton>()
         {
@@ -43,6 +43,8 @@ namespace VirtualController
         private bool disposedValue;
         private GamepadListener listener;
         private DispatcherQueue dispatcher;
+
+        public event EventHandler<(GamepadButton, int)> ButtonsChanged;
 
         public VirtualController(string svgPath)
         {
@@ -125,6 +127,8 @@ namespace VirtualController
                     controllerButton.Fill = state.HasFlag(button) ? pressedBrush : controllerButton.Stroke;
                 });
             }
+
+            ButtonsChanged?.Invoke(this, (state, frameIndex));
         }
 
         protected virtual void Dispose(bool disposing)

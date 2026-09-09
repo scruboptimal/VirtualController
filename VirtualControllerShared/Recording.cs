@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using VirtualControllerNative.Interop;
+﻿using VirtualControllerNative.Interop;
 
 namespace VirtualControllerShared
 {
@@ -10,5 +7,5 @@ namespace VirtualControllerShared
         public List<RecordingFrame> Frames = new List<RecordingFrame>();
     }
 
-    public record class RecordingFrame(int frameIdx, List<GamepadButton> pressed);
+    public record class RecordingFrame(int frameIdx, GamepadButton state);
 }
