@@ -48,8 +48,6 @@ namespace VirtualController
                 {
                     this.controllerWindow = OpenControllerInNewWindow(this.ViewModel.Controller);
                 }
-
-                this.ViewModel.CanRecord = true;
             }
             catch (Exception ex)
             {
@@ -101,6 +99,19 @@ namespace VirtualController
             }
 
             return bVal ? this.trueValue : this.falseValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ObjectNotNullConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            return value != null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

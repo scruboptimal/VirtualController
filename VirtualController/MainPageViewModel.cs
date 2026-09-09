@@ -6,7 +6,6 @@ namespace VirtualController
     public partial class MainPageViewModel : ObservableObject
     {
         [ObservableProperty] private bool isRecording;
-        [ObservableProperty] private bool canRecord;
         [ObservableProperty] private string lastErrorText = string.Empty;
         [ObservableProperty] private Recording displayRecording;
         [ObservableProperty] private VirtualController? controller;
