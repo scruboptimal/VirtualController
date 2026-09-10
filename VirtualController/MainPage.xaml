@@ -6,6 +6,7 @@
     xmlns:local="using:VirtualController"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:skia="using:SkiaSharp.Views.Windows"
     mc:Ignorable="d">
   <Page.Resources>
     <local:BooleanToObjectConverter x:Key="b2RecordStop" TrueValue="Stop" FalseValue="Record" />
@@ -17,13 +18,15 @@
       <RowDefinition Height="*"/>
       <RowDefinition Height="*"/>
       <RowDefinition Height="*"/>
+      <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <ContentControl Grid.Row="0" Content="{Binding Controller.Canvas}" Width="300" Height="400" />
+    <ContentControl Grid.Row="0" Content="{Binding Controller.Canvas}"  />
     <Button Grid.Row="1" Content="Open Virtual Controller" Click="OpenVirtualController_Click" HorizontalAlignment="Center" />
     <Button IsEnabled="{Binding Controller, Converter={StaticResource notNull}}" 
             Content="{Binding IsRecording, Converter={StaticResource b2RecordStop}}" 
             Grid.Row="2" Click="ToggleRecording_Click" HorizontalAlignment="Center" />
-    <TextBlock Grid.Row="3" Text="{Binding LastErrorText}" />
+    <skia:SKXamlCanvas Grid.Row="3" x:Name="TimelineCanvas" Width="400" Height="256" PaintSurface="OnTimelinePaintSurface" />
+    <TextBlock Grid.Row="4" Text="{Binding LastErrorText}" />
   </Grid>
 </Page>

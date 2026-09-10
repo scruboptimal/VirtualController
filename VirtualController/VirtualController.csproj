@@ -44,6 +44,8 @@
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.2.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1721" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
+    <PackageReference Include="SkiaSharp" Version="4.152.0" />
+    <PackageReference Include="SkiaSharp.Views.WinUI" Version="4.152.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VirtualControllerShared\VirtualControllerShared.csproj" />
@@ -80,5 +82,6 @@
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
+    <UseWPF>False</UseWPF>
   </PropertyGroup>
 </Project>

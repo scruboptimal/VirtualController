@@ -7,7 +7,7 @@ namespace VirtualController
     {
         [ObservableProperty] private bool isRecording;
         [ObservableProperty] private string lastErrorText = string.Empty;
-        [ObservableProperty] private Recording displayRecording;
+        [ObservableProperty] private Recording? displayRecording;
         [ObservableProperty] private VirtualController? controller;
         [ObservableProperty] private bool openInNewWindow;
 
