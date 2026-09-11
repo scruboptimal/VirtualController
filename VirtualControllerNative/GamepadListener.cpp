@@ -39,9 +39,12 @@ namespace VirtualControllerNative
                 while (m_listening)
                 {
                     XINPUT_STATE state = {};
-                    if (XInputGetState(controllerIndex, &state) == ERROR_SUCCESS &&
-                        state.dwPacketNumber != prevState.dwPacketNumber)
+                    if (XInputGetState(controllerIndex, &state) == ERROR_SUCCESS)
                     {
+                        const bool anyChange = (state.Gamepad.wButtons != prevState.Gamepad.wButtons) ||
+                            (state.Gamepad.bLeftTrigger != prevState.Gamepad.bLeftTrigger) ||
+                            (state.Gamepad.bRightTrigger != prevState.Gamepad.bRightTrigger);
+
                         GamepadButton result = GamepadButton::None;
                         for (const auto& pair : ButtonMap)
                         {
@@ -64,7 +67,10 @@ namespace VirtualControllerNative
                             result = (GamepadButton)(result | GamepadButton::RightTrigger);
                         }
 
-                        (void)handler->HandleGamepadState(result, m_frameIndex);
+                        if (anyChange)
+                        {
+                            (void)handler->HandleGamepadState(result, m_frameIndex);
+                        }
                         prevState = state;
                     }
 

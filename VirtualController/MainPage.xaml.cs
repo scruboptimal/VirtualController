@@ -21,6 +21,8 @@ namespace VirtualController
             InitializeComponent();
             this.owningWindow = owningWindow;
             this.DataContext = this.ViewModel;
+
+            this.ViewModel.OpenController(@"C:\Users\cmfra\OneDrive\Desktop\bldDesktop\hitbox.svg");
         }
 
         public MainPageViewModel ViewModel { get; } = new MainPageViewModel();
@@ -119,33 +121,41 @@ namespace VirtualController
                 Style = SKPaintStyle.Fill,
             };
 
-            for (int frameIdx = 0; frameIdx < numFrames; frameIdx++)
-            {
-                for (int buttonIdx = 0; buttonIdx < numButtons; buttonIdx++)
-                {
-                    canvas.DrawRect(GetRect(frameIdx, buttonIdx), framePaint);
-                }
-            }
-
             var recording = this.ViewModel.DisplayRecording;
             if (recording != null)
             {
-                foreach (var frame in recording.Frames)
+                for (int i = 0; i < recording.Frames.Count; i++)
                 {
-                    int frameIdx = frame.frameIdx;
-                    var nextFrame = frameIdx + 1 < recording.Frames.Count ? recording.Frames[frameIdx + 1] : null;
-
-                    float curFrameX = frameIdx * frameWidth;
-                    float nextFrameX = nextFrame != null ? nextFrame.frameIdx * frameWidth : e.Info.Width;
-
-                    for (int buttonIdx = 0; buttonIdx < numButtons; buttonIdx++)
+                    int firstFrameIdx = recording.Frames[0].frameIdx;
+                    var frame = recording.Frames[i];
+                    var nextFrame = i + 1 < recording.Frames.Count ? recording.Frames[i + 1] : null;
+                    if (frame.state == GamepadButton.None)
                     {
-                        var button = (GamepadButton)(buttonIdx << (buttonIdx - 1));
+                        // Nothing to do
+                        continue;
+                    }
+
+                    int curFrameIdxOffset = frame.frameIdx - firstFrameIdx;
+                    int nextFrameIdxOffset = nextFrame != null ? (nextFrame.frameIdx - firstFrameIdx) : int.MaxValue;
+                    float curFrameX = curFrameIdxOffset * frameWidth;
+                    float nextFrameX = nextFrame != null ? nextFrameIdxOffset * frameWidth : e.Info.Width;
+
+                    for (int buttonIdx = 1; buttonIdx < numButtons; buttonIdx++)
+                    {
+                        var button = (GamepadButton)(1 << (buttonIdx - 1));
                         if (frame.state.HasFlag(button))
                         {
                             canvas.DrawRect(new SKRect(curFrameX, nextFrameX, buttonIdx * buttonHeight, (buttonIdx + 1) * buttonHeight), pressedFramePaint);
                         }
                     }
+                }
+            }
+
+            for (int frameIdx = 0; frameIdx < numFrames; frameIdx++)
+            {
+                for (int buttonIdx = 0; buttonIdx < numButtons; buttonIdx++)
+                {
+                    canvas.DrawRect(GetRect(frameIdx, buttonIdx), framePaint);
                 }
             }
         }
