@@ -64,11 +64,7 @@ namespace VirtualControllerNative
                             result = (GamepadButton)(result | GamepadButton::RightTrigger);
                         }
 
-                        if (result != GamepadButton::None)
-                        {
-                            (void)handler->HandleGamepadState(result, m_frameIndex);
-                        }
-
+                        (void)handler->HandleGamepadState(result, m_frameIndex);
                         prevState = state;
                     }
 
