@@ -9,7 +9,7 @@
     xmlns:skia="using:SkiaSharp.Views.Windows"
     mc:Ignorable="d">
 
-  <Grid>
-    <skia:SKXamlCanvas Grid.Row="3" x:Name="TimelineCanvas" Width="400" Height="256" PaintSurface="OnTimelinePaintSurface" />
-  </Grid>
+  <ScrollViewer HorizontalScrollBarVisibility="Visible" Margin="8">
+    <skia:SKXamlCanvas Margin="8" x:Name="Canvas" Height="256" PaintSurface="OnTimelinePaintSurface" />
+  </ScrollViewer>
 </UserControl>

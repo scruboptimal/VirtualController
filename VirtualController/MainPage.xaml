@@ -23,6 +23,9 @@
     <Button Grid.Row="1" Content="Open Virtual Controller" Click="OpenVirtualController_Click" HorizontalAlignment="Center" />
     <Button Content="{Binding IsRecording, Converter={StaticResource b2RecordStop}}" 
             Grid.Row="2" Click="ToggleRecording_Click" HorizontalAlignment="Center" />
-    <local:RecordingTimeline Grid.Row="3" HorizontalAlignment="Center" Recording="{Binding DisplayRecording}" />
+    <local:RecordingTimeline Grid.Row="3" Width="400" Margin="8"
+                             Recording="{Binding DisplayRecording}"
+                             HorizontalAlignment="Center" 
+                             VerticalAlignment="Center" />
   </Grid>
 </Page>

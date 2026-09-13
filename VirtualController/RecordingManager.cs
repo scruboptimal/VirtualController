@@ -34,7 +34,7 @@ namespace VirtualController
 
         private void OnGamepadEvent(VirtualControllerNative.Interop.GamepadButton state, int frameIndex)
         {
-            this.recording.AddFrame(frameIndex, state);
+            this.recording.AddState(frameIndex, state);
         }
     }
 }

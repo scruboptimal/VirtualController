@@ -59,11 +59,11 @@ namespace VirtualController
 
             canvas.Clear(SKColors.DarkGray);
 
-            RenderRecording(canvas, numButtons, numFrames, e.Info);
+            RenderRecording(canvas, numButtons, e.Info);
             RenderGrid(canvas, numButtons, numFrames);
         }
 
-        private void RenderRecording(SKCanvas canvas, int numButtons, int numFrames, SKImageInfo imageInfo)
+        private void RenderRecording(SKCanvas canvas, int numButtons, SKImageInfo imageInfo)
         {
             if (this.Recording == null)
             {
@@ -115,7 +115,9 @@ namespace VirtualController
         private static void OnRecordingChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
             RecordingTimeline timeline = (RecordingTimeline)dependencyObject;
-            timeline.TimelineCanvas.Invalidate();
+
+            Recording? recording = e.NewValue as Recording;
+            timeline.Canvas.Width = recording != null ? recording.FrameCount * frameWidth : 0;
         }
     }
 }
