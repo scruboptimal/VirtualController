@@ -25,8 +25,11 @@ namespace VirtualController
         public static readonly DependencyProperty RecordingDependencyProperty = DependencyProperty.Register(nameof(Recording),
             typeof(Recording), typeof(RecordingTimeline), new PropertyMetadata(null, OnRecordingChanged));
 
+        private static readonly int labelWidth = 32;
         private static readonly int frameWidth = 16;
         private static readonly int buttonHeight = 32;
+
+        private static SKFont labelFont = new SKFont();
 
         private static SKPaint framePaint = new()
         {
@@ -54,16 +57,15 @@ namespace VirtualController
         private void OnTimelinePaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             var canvas = e.Surface.Canvas;
-            int numButtons = Enum.GetValues(typeof(GamepadButton)).Length;
             int numFrames = e.Info.Width / frameWidth;
 
             canvas.Clear(SKColors.DarkGray);
 
-            RenderRecording(canvas, numButtons, e.Info);
-            RenderGrid(canvas, numButtons, numFrames);
+            RenderRecording(canvas, e.Info);
+            RenderGrid(canvas, numFrames);
         }
 
-        private void RenderRecording(SKCanvas canvas, int numButtons, SKImageInfo imageInfo)
+        private void RenderRecording(SKCanvas canvas, SKImageInfo imageInfo)
         {
             if (this.Recording == null)
             {
@@ -80,12 +82,12 @@ namespace VirtualController
                     continue;
                 }
 
-                float curFrameX = frame.FrameIdx * frameWidth;
-                float nextFrameX = nextFrame != null ? nextFrame.FrameIdx * frameWidth : imageInfo.Width;
+                float curFrameX = (frame.FrameIdx * frameWidth) + labelWidth;
+                float nextFrameX = (nextFrame != null ? nextFrame.FrameIdx * frameWidth : imageInfo.Width) + labelWidth;
 
-                for (int buttonIdx = 1; buttonIdx < numButtons; buttonIdx++)
+                for (int buttonIdx = 0; buttonIdx < GamepadButtons.Buttons.Count; buttonIdx++)
                 {
-                    var button = (GamepadButton)(1 << (buttonIdx - 1));
+                    var button = GamepadButtons.GetGamepadButton(buttonIdx);
                     if (frame.State.HasFlag(button))
                     {
                         canvas.DrawRect(new SKRect(curFrameX, buttonIdx * buttonHeight, nextFrameX, (buttonIdx + 1) * buttonHeight), pressedFramePaint);
@@ -94,20 +96,28 @@ namespace VirtualController
             }
         }
 
-        private void RenderGrid(SKCanvas canvas, int numButtons, int numFrames)
+        private void RenderGrid(SKCanvas canvas, int numFrames)
         {
+            for (int buttonIdx = 0; buttonIdx < GamepadButtons.Buttons.Count; buttonIdx++)
+            {
+                var button = GamepadButtons.GetGamepadButton(buttonIdx);
+                string label = GamepadButtons.ButtonLabels[button];
+                float labelY = (buttonIdx * buttonHeight) + (buttonHeight / 2) + (labelFont.Size / 2);
+                canvas.DrawText(label, labelWidth / 2, labelY, SKTextAlign.Center, labelFont, framePaint);
+            }
+
             for (int frameIdx = 0; frameIdx < numFrames; frameIdx++)
             {
-                for (int buttonIdx = 0; buttonIdx < numButtons; buttonIdx++)
+                for (int buttonIdx = 0; buttonIdx < GamepadButtons.Buttons.Count; buttonIdx++)
                 {
-                    canvas.DrawRect(GetRect(frameIdx, buttonIdx), framePaint);
+                    canvas.DrawRect(GetFrameRect(frameIdx, buttonIdx), framePaint);
                 }
             }
         }
 
-        static SKRect GetRect(int frameIdx, int buttonIdx)
+        static SKRect GetFrameRect(int frameIdx, int buttonIdx)
         {
-            float x = frameIdx * frameWidth;
+            float x = (frameIdx * frameWidth) + labelWidth;
             float y = buttonIdx * buttonHeight;
             return new SKRect(x, y, x + frameWidth, y + buttonHeight);
         }

@@ -24,26 +24,7 @@ namespace VirtualController
 {
     public sealed partial class VirtualControllerDisplay : UserControl
     {
-        static Dictionary<string, GamepadButton> buttonMappings = new Dictionary<string, GamepadButton>()
-        {
-            { "buttonA", GamepadButton.A },
-            { "buttonB", GamepadButton.B },
-            { "buttonX", GamepadButton.X },
-            { "buttonY", GamepadButton.Y },
-            { "buttonLeft", GamepadButton.DPadLeft },
-            { "buttonRight", GamepadButton.DPadRight },
-            { "buttonDown", GamepadButton.DPadDown },
-            { "buttonUp", GamepadButton.DPadUp },
-            { "buttonLS", GamepadButton.LeftThumb },
-            { "buttonRS", GamepadButton.RightThumb },
-            { "buttonLB", GamepadButton.LeftShoulder },
-            { "buttonRB", GamepadButton.RightShoulder },
-            { "buttonLT", GamepadButton.LeftTrigger },
-            { "buttonRT", GamepadButton.RightTrigger },
-        };
-
         static SolidColorBrush pressedBrush = new SolidColorBrush(Color.FromArgb(0xff, 0xff, 0xff, 0xff)); // white
-        static List<GamepadButton> buttons = Enum.GetValues<GamepadButton>().OfType<GamepadButton>().Where(x => x != GamepadButton.None).ToList();
 
         private Dictionary<GamepadButton, Ellipse> controllerButtons = new();
         private GamepadListener listener;
@@ -95,7 +76,7 @@ namespace VirtualController
                     throw new KeyNotFoundException();
                 }
 
-                if (buttonMappings.TryGetValue(buttonId, out GamepadButton button))
+                if (GamepadButtons.ButtonSVGMappings.TryGetValue(buttonId, out GamepadButton button))
                 {
                     double x = double.Parse(buttonNode?.Attributes?.GetNamedItem("cx")?.Value ?? "0");
                     double y = double.Parse(buttonNode?.Attributes?.GetNamedItem("cy")?.Value ?? "0");
@@ -127,7 +108,7 @@ namespace VirtualController
 
         void OnGamepadEvent(GamepadButton state, int frameIndex)
         {
-            foreach (var button in buttons)
+            foreach (var button in GamepadButtons.Buttons)
             {
                 if (!this.controllerButtons.TryGetValue(button, out var controllerButton))
                 {
