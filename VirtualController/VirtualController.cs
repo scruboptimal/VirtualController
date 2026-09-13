@@ -44,7 +44,7 @@ namespace VirtualController
         private GamepadListener listener;
         private DispatcherQueue dispatcher;
 
-        public event EventHandler<(GamepadButton, int)> ButtonsChanged;
+        public event EventHandler<(GamepadButton, int)>? ButtonsChanged;
 
         public VirtualController(string svgPath)
         {

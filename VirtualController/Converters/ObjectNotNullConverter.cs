@@ -3,7 +3,7 @@ using System;
 
 namespace VirtualController
 {
-    public class ObjectNotNullConverter : IValueConverter
+    public partial class ObjectNotNullConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

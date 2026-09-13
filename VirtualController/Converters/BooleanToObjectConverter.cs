@@ -6,8 +6,8 @@ namespace VirtualController
 {
     public partial class BooleanToObjectConverter : ObservableObject, IValueConverter
     {
-        [ObservableProperty] private object? trueValue;
-        [ObservableProperty] private object? falseValue;
+        [ObservableProperty] public partial object? TrueValue { get; set; }
+        [ObservableProperty] public partial object? FalseValue { get; set; }
 
         public object? Convert(object value, Type targetType, object parameter, string language)
         {
@@ -16,7 +16,7 @@ namespace VirtualController
                 return null;
             }
 
-            return bVal ? this.trueValue : this.falseValue;
+            return bVal ? this.TrueValue : this.FalseValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

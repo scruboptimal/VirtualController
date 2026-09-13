@@ -69,9 +69,8 @@ namespace VirtualController
                     this.controllerWindow = OpenControllerInNewWindow(this.ViewModel.Controller);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                this.ViewModel.LastErrorText = $"An error occurred creating the virtual controller: {ex.Message}";
             }
         }
 
@@ -119,24 +118,21 @@ namespace VirtualController
             {
                 for (int i = 0; i < recording.Frames.Count; i++)
                 {
-                    int firstFrameIdx = recording.Frames[0].frameIdx;
                     var frame = recording.Frames[i];
                     var nextFrame = i + 1 < recording.Frames.Count ? recording.Frames[i + 1] : null;
-                    if (frame.state == GamepadButton.None)
+                    if (frame.State == GamepadButton.None)
                     {
                         // Nothing to do
                         continue;
                     }
 
-                    int curFrameIdxOffset = frame.frameIdx - firstFrameIdx;
-                    int nextFrameIdxOffset = nextFrame != null ? (nextFrame.frameIdx - firstFrameIdx) : int.MaxValue;
-                    float curFrameX = curFrameIdxOffset * frameWidth;
-                    float nextFrameX = nextFrame != null ? nextFrameIdxOffset * frameWidth : e.Info.Width;
+                    float curFrameX = frame.FrameIdx * frameWidth;
+                    float nextFrameX = nextFrame != null ? nextFrame.FrameIdx * frameWidth : e.Info.Width;
 
                     for (int buttonIdx = 1; buttonIdx < numButtons; buttonIdx++)
                     {
                         var button = (GamepadButton)(1 << (buttonIdx - 1));
-                        if (frame.state.HasFlag(button))
+                        if (frame.State.HasFlag(button))
                         {
                             canvas.DrawRect(new SKRect(curFrameX, buttonIdx * buttonHeight, nextFrameX, (buttonIdx + 1) * buttonHeight), pressedFramePaint);
                         }

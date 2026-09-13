@@ -5,11 +5,10 @@ namespace VirtualController
 {
     public partial class MainPageViewModel : ObservableObject
     {
-        [ObservableProperty] private bool isRecording;
-        [ObservableProperty] private string lastErrorText = string.Empty;
-        [ObservableProperty] private Recording? displayRecording;
-        [ObservableProperty] private VirtualController? controller;
-        [ObservableProperty] private bool openInNewWindow;
+        [ObservableProperty] public partial bool IsRecording { get; set; }
+        [ObservableProperty] public partial Recording? DisplayRecording { get; set; }
+        [ObservableProperty] public partial VirtualController? Controller { get; set; }
+        [ObservableProperty] public partial bool OpenInNewWindow { get; set; }
 
         Recording? currentRecording;
 
