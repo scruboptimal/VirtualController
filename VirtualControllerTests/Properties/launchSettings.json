@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "VirtualControllerTests (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "VirtualControllerTests (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

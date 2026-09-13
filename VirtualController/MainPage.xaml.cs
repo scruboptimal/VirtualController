@@ -16,6 +16,21 @@ namespace VirtualController
         private Window? controllerWindow;
         private Window owningWindow;
 
+        private static readonly int frameWidth = 8;
+        private static readonly int buttonHeight = 16;
+
+        private static SKPaint framePaint = new()
+        {
+            Color = SKColors.Black,
+            Style = SKPaintStyle.Stroke,
+        };
+
+        private static SKPaint pressedFramePaint = new()
+        {
+            Color = SKColors.Red,
+            Style = SKPaintStyle.Fill,
+        };
+
         public MainPage(Window owningWindow)
         {
             InitializeComponent();
@@ -93,33 +108,11 @@ namespace VirtualController
 
         private void OnTimelinePaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            const int frameWidth = 8;
-            const int buttonHeight = 16;
-
             var canvas = e.Surface.Canvas;
             int numButtons = Enum.GetValues(typeof(GamepadButton)).Length;
             int numFrames = e.Info.Width / frameWidth;
 
-            static SKRect GetRect(int frameIdx, int buttonIdx)
-            {
-                float x = frameIdx * frameWidth;
-                float y = buttonIdx * buttonHeight;
-                return new SKRect(x, y, x + frameWidth, y + buttonHeight);
-            }
-
             canvas.Clear(SKColors.DarkGray);
-
-            var framePaint = new SKPaint()
-            {
-                Color = SKColors.Black,
-                Style = SKPaintStyle.Stroke,
-            };
-
-            var pressedFramePaint = new SKPaint()
-            {
-                Color = SKColors.Red,
-                Style = SKPaintStyle.Fill,
-            };
 
             var recording = this.ViewModel.DisplayRecording;
             if (recording != null)
@@ -159,39 +152,12 @@ namespace VirtualController
                 }
             }
         }
-    }
 
-    public partial class BooleanToObjectConverter : ObservableObject, IValueConverter
-    {
-        [ObservableProperty] private object? trueValue;
-        [ObservableProperty] private object? falseValue;
-
-        public object? Convert(object value, Type targetType, object parameter, string language)
+        static SKRect GetRect(int frameIdx, int buttonIdx)
         {
-            if (value is not bool bVal)
-            {
-                return null;
-            }
-
-            return bVal ? this.trueValue : this.falseValue;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class ObjectNotNullConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            return value != null;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
+            float x = frameIdx * frameWidth;
+            float y = buttonIdx * buttonHeight;
+            return new SKRect(x, y, x + frameWidth, y + buttonHeight);
         }
     }
 }

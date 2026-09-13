@@ -11,4 +11,8 @@
     <Platform Project="x64" />
     <Build Solution="Release|*" Project="false" />
   </Project>
+  <Project Path="VirtualControllerTests/VirtualControllerTests.csproj" Id="e0bd47f5-06f0-4d8a-b192-141216dbc649">
+    <Platform Project="x64" />
+    <Deploy />
+  </Project>
 </Solution>

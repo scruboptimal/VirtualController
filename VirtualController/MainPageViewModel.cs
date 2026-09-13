@@ -41,7 +41,7 @@ namespace VirtualController
 
         private void Controller_ButtonsChanged(object? sender, (VirtualControllerNative.Interop.GamepadButton, int) e)
         {
-            this.currentRecording.Frames.Add(new RecordingFrame(e.Item2, e.Item1));
+            this.currentRecording?.AddFrame(e.Item2, e.Item1);
         }
     }
 }
