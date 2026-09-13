@@ -26,7 +26,7 @@ namespace VirtualController
     {
         static SolidColorBrush pressedBrush = new SolidColorBrush(Color.FromArgb(0xff, 0xff, 0xff, 0xff)); // white
 
-        private Dictionary<GamepadButton, Ellipse> controllerButtons = new();
+        private VirtualControllerData controllerData;
         private GamepadListener listener;
         private DispatcherQueue dispatcher;
 
@@ -40,10 +40,24 @@ namespace VirtualController
             this.listener = listener;
             this.listener.OnGamepadEvent += this.OnGamepadEvent;
 
+            this.dispatcher = Windows.System.DispatcherQueue.GetForCurrentThread();
+            this.controllerData = LoadFromSvg(svgPath);
+
+            this.Canvas.Width = this.controllerData.Width;
+            this.Canvas.Height = this.controllerData.Height;
+            this.Canvas.Background = new SolidColorBrush(this.controllerData.Background);
+            foreach (var button in this.controllerData.Buttons.Values)
+            {
+                this.Canvas.Children.Add(button);
+            }
+
+            this.Content = this.Canvas;
+        }
+
+        public static VirtualControllerData LoadFromSvg(string svgPath)
+        {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(svgPath);
-
-            this.dispatcher = Windows.System.DispatcherQueue.GetForCurrentThread();
 
             var root = xmlDoc.DocumentElement;
             if (root == null)
@@ -57,16 +71,15 @@ namespace VirtualController
             double width = double.Parse(backgroundRectNode?.Attributes?.GetNamedItem("width")?.Value ?? "0");
             double height = double.Parse(backgroundRectNode?.Attributes?.GetNamedItem("height")?.Value ?? "0");
             byte[] canvasFill = SVGHelpers.GetFillArgb(backgroundRectNode);
-
-            this.Canvas.Width = width;
-            this.Canvas.Height = height;
-            this.Canvas.Background = new SolidColorBrush(Color.FromArgb(canvasFill[0], canvasFill[1], canvasFill[2], canvasFill[3]));
+            Color background = Color.FromArgb(canvasFill[0], canvasFill[1], canvasFill[2], canvasFill[3]);
 
             XmlNode? buttonLayer = SVGHelpers.FindChild(root, "layerButtons");
             if (buttonLayer == null)
             {
                 throw new KeyNotFoundException();
             }
+
+            var buttons = new Dictionary<GamepadButton, Ellipse>();
             for (int i = 0; i < buttonLayer.ChildNodes.Count; i++)
             {
                 XmlNode? buttonNode = buttonLayer.ChildNodes[i];
@@ -93,9 +106,8 @@ namespace VirtualController
                     };
                     Canvas.SetLeft(e, x - r);
                     Canvas.SetTop(e, y - r);
-                    this.Canvas.Children.Add(e);
 
-                    this.controllerButtons.Add(button, e);
+                    buttons.Add(button, e);
                 }
                 else
                 {
@@ -103,14 +115,14 @@ namespace VirtualController
                 }
             }
 
-            this.Content = this.Canvas;
+            return new VirtualControllerData(width, height, background, buttons);
         }
 
         void OnGamepadEvent(GamepadButton state, int frameIndex)
         {
             foreach (var button in GamepadButtons.Buttons)
             {
-                if (!this.controllerButtons.TryGetValue(button, out var controllerButton))
+                if (!this.controllerData.Buttons.TryGetValue(button, out var controllerButton))
                 {
                     continue;
                 }
@@ -122,4 +134,6 @@ namespace VirtualController
             }
         }
     }
+
+    public record class VirtualControllerData(double Width, double Height, Color Background, IReadOnlyDictionary<GamepadButton, Ellipse> Buttons);
 }
