@@ -9,7 +9,7 @@
     xmlns:skia="using:SkiaSharp.Views.Windows"
     mc:Ignorable="d">
 
-  <ScrollViewer HorizontalScrollBarVisibility="Visible" Margin="8">
-    <skia:SKXamlCanvas Margin="8" x:Name="Canvas" Height="256" PaintSurface="OnTimelinePaintSurface" />
+  <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Margin="8">
+    <skia:SKXamlCanvas Margin="8" x:Name="Canvas" Height="512" PaintSurface="OnTimelinePaintSurface" />
   </ScrollViewer>
 </UserControl>

@@ -1,31 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
-    x:Class="VirtualController.MainPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:VirtualController"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+<Page x:Class="VirtualController.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:VirtualController"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
   <Page.Resources>
-    <local:BooleanToObjectConverter x:Key="b2RecordStop" TrueValue="Stop" FalseValue="Record" />
-    <local:ObjectNotNullConverter x:Key="notNull" />
+    <local:BooleanToObjectConverter x:Key="b2RecordStop"
+                                    TrueValue="Stop"
+                                    FalseValue="Record" />
   </Page.Resources>
 
   <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="*"/>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <ContentControl Grid.Row="0" Content="{Binding Controller}" HorizontalAlignment="Center" />
-    <Button Grid.Row="1" Content="Open Virtual Controller" Click="OpenVirtualController_Click" HorizontalAlignment="Center" />
-    <Button Content="{Binding IsRecording, Converter={StaticResource b2RecordStop}}" 
-            Grid.Row="2" Click="ToggleRecording_Click" HorizontalAlignment="Center" />
-    <local:RecordingTimeline Grid.Row="3" Width="400" Margin="8"
-                             Recording="{Binding DisplayRecording}"
-                             HorizontalAlignment="Center" 
-                             VerticalAlignment="Center" />
+    <Grid Grid.Row="0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <ContentControl Grid.Row="0"
+                      Margin="8"
+                      Content="{Binding Controller}"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center" />
+      <Button Grid.Row="1"
+              Margin="8"
+              Content="Open Virtual Controller"
+              Click="OpenVirtualController_Click"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center" />
+    </Grid>
+    <Grid Grid.Row="1">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <local:RecordingTimeline Grid.Row="0"
+                               Margin="8"
+                               Recording="{Binding DisplayRecording}"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Center" />
+      <Button Content="{Binding IsRecording, Converter={StaticResource b2RecordStop}}"
+              Margin="8"
+              Grid.Row="1"
+              Click="ToggleRecording_Click"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center" />
+    </Grid>
   </Grid>
 </Page>

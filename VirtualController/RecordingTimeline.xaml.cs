@@ -25,8 +25,8 @@ namespace VirtualController
         public static readonly DependencyProperty RecordingDependencyProperty = DependencyProperty.Register(nameof(Recording),
             typeof(Recording), typeof(RecordingTimeline), new PropertyMetadata(null, OnRecordingChanged));
 
-        private static readonly int frameWidth = 8;
-        private static readonly int buttonHeight = 16;
+        private static readonly int frameWidth = 16;
+        private static readonly int buttonHeight = 32;
 
         private static SKPaint framePaint = new()
         {
