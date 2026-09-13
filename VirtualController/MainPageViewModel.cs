@@ -38,6 +38,7 @@ namespace VirtualController
             else
             {
                 this.DisplayRecording = this.recordingManager.Stop();
+                this.recordingManager = null;
             }
 
             this.IsRecording = !this.IsRecording;

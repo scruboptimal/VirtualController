@@ -16,21 +16,6 @@ namespace VirtualController
         private Window? controllerWindow;
         private Window owningWindow;
 
-        private static readonly int frameWidth = 8;
-        private static readonly int buttonHeight = 16;
-
-        private static SKPaint framePaint = new()
-        {
-            Color = SKColors.Black,
-            Style = SKPaintStyle.Stroke,
-        };
-
-        private static SKPaint pressedFramePaint = new()
-        {
-            Color = SKColors.Red,
-            Style = SKPaintStyle.Fill,
-        };
-
         public MainPage(Window owningWindow)
         {
             InitializeComponent();
@@ -102,58 +87,6 @@ namespace VirtualController
         private void ToggleRecording_Click(object sender, RoutedEventArgs e)
         {
             this.ViewModel.ToggleRecording();
-            this.TimelineCanvas.Invalidate();
-        }
-
-        private void OnTimelinePaintSurface(object sender, SKPaintSurfaceEventArgs e)
-        {
-            var canvas = e.Surface.Canvas;
-            int numButtons = Enum.GetValues(typeof(GamepadButton)).Length;
-            int numFrames = e.Info.Width / frameWidth;
-
-            canvas.Clear(SKColors.DarkGray);
-
-            var recording = this.ViewModel.DisplayRecording;
-            if (recording != null)
-            {
-                for (int i = 0; i < recording.Frames.Count; i++)
-                {
-                    var frame = recording.Frames[i];
-                    var nextFrame = i + 1 < recording.Frames.Count ? recording.Frames[i + 1] : null;
-                    if (frame.State == GamepadButton.None)
-                    {
-                        // Nothing to do
-                        continue;
-                    }
-
-                    float curFrameX = frame.FrameIdx * frameWidth;
-                    float nextFrameX = nextFrame != null ? nextFrame.FrameIdx * frameWidth : e.Info.Width;
-
-                    for (int buttonIdx = 1; buttonIdx < numButtons; buttonIdx++)
-                    {
-                        var button = (GamepadButton)(1 << (buttonIdx - 1));
-                        if (frame.State.HasFlag(button))
-                        {
-                            canvas.DrawRect(new SKRect(curFrameX, buttonIdx * buttonHeight, nextFrameX, (buttonIdx + 1) * buttonHeight), pressedFramePaint);
-                        }
-                    }
-                }
-            }
-
-            for (int frameIdx = 0; frameIdx < numFrames; frameIdx++)
-            {
-                for (int buttonIdx = 0; buttonIdx < numButtons; buttonIdx++)
-                {
-                    canvas.DrawRect(GetRect(frameIdx, buttonIdx), framePaint);
-                }
-            }
-        }
-
-        static SKRect GetRect(int frameIdx, int buttonIdx)
-        {
-            float x = frameIdx * frameWidth;
-            float y = buttonIdx * buttonHeight;
-            return new SKRect(x, y, x + frameWidth, y + buttonHeight);
         }
     }
 }

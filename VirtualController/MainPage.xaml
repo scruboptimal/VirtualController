@@ -6,7 +6,6 @@
     xmlns:local="using:VirtualController"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:skia="using:SkiaSharp.Views.Windows"
     mc:Ignorable="d">
   <Page.Resources>
     <local:BooleanToObjectConverter x:Key="b2RecordStop" TrueValue="Stop" FalseValue="Record" />
@@ -20,10 +19,10 @@
       <RowDefinition Height="*"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-    <ContentControl Grid.Row="0" Content="{Binding Controller}"  />
+    <ContentControl Grid.Row="0" Content="{Binding Controller}" HorizontalAlignment="Center" />
     <Button Grid.Row="1" Content="Open Virtual Controller" Click="OpenVirtualController_Click" HorizontalAlignment="Center" />
     <Button Content="{Binding IsRecording, Converter={StaticResource b2RecordStop}}" 
             Grid.Row="2" Click="ToggleRecording_Click" HorizontalAlignment="Center" />
-    <skia:SKXamlCanvas Grid.Row="3" x:Name="TimelineCanvas" Width="400" Height="256" PaintSurface="OnTimelinePaintSurface" />
+    <local:RecordingTimeline Grid.Row="3" HorizontalAlignment="Center" Recording="{Binding DisplayRecording}" />
   </Grid>
 </Page>
