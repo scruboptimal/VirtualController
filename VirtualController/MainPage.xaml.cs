@@ -145,7 +145,7 @@ namespace VirtualController
                         var button = (GamepadButton)(1 << (buttonIdx - 1));
                         if (frame.state.HasFlag(button))
                         {
-                            canvas.DrawRect(new SKRect(curFrameX, nextFrameX, buttonIdx * buttonHeight, (buttonIdx + 1) * buttonHeight), pressedFramePaint);
+                            canvas.DrawRect(new SKRect(curFrameX, buttonIdx * buttonHeight, nextFrameX, (buttonIdx + 1) * buttonHeight), pressedFramePaint);
                         }
                     }
                 }
