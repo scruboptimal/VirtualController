@@ -7,40 +7,40 @@ namespace VirtualController
     {
         [ObservableProperty] public partial bool IsRecording { get; set; }
         [ObservableProperty] public partial Recording? DisplayRecording { get; set; }
-        [ObservableProperty] public partial VirtualController? Controller { get; set; }
+        [ObservableProperty] public partial VirtualControllerDisplay? Controller { get; set; }
         [ObservableProperty] public partial bool OpenInNewWindow { get; set; }
 
-        Recording? currentRecording;
+        private GamepadListener gamepadListener;
+        private RecordingManager? recordingManager;
+
+        public MainPageViewModel()
+        {
+            this.gamepadListener = new GamepadListener(0);
+            this.gamepadListener.StartListening();
+        }
 
         public void OpenController(string svgPath)
         {
-            this.Controller = new VirtualController(svgPath);
+            this.Controller = new VirtualControllerDisplay(svgPath, this.gamepadListener);
         }
 
         public void ToggleRecording()
         {
-            if (this.Controller == null)
+            if (this.gamepadListener == null)
             {
                 return;
             }
 
-            if (!this.IsRecording)
+            if (this.recordingManager == null)
             {
-                this.currentRecording = new Recording();
-                this.Controller.ButtonsChanged += Controller_ButtonsChanged;
+                this.recordingManager = RecordingManager.Start(this.gamepadListener);
             }
             else
             {
-                this.Controller.ButtonsChanged -= Controller_ButtonsChanged;
-                this.DisplayRecording = this.currentRecording;
+                this.DisplayRecording = this.recordingManager.Stop();
             }
 
             this.IsRecording = !this.IsRecording;
-        }
-
-        private void Controller_ButtonsChanged(object? sender, (VirtualControllerNative.Interop.GamepadButton, int) e)
-        {
-            this.currentRecording?.AddFrame(e.Item2, e.Item1);
         }
     }
 }

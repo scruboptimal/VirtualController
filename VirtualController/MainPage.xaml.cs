@@ -74,7 +74,7 @@ namespace VirtualController
             }
         }
 
-        private static Window OpenControllerInNewWindow(VirtualController? controller)
+        private static Window OpenControllerInNewWindow(VirtualControllerDisplay? controller)
         {
             if (controller == null)
             {
@@ -83,15 +83,15 @@ namespace VirtualController
 
             var controllerWindow = new Window()
             {
-                Content = controller.Canvas,
+                Content = controller,
                 Title = "Virtual Controller"
             };
 
             // WinUI doesn't have ResizeToFit so we need to resize the window manually accounting for DPI
             var displayInfo = DisplayInformationInterop.GetForWindow((nint)controllerWindow.AppWindow.Id.Value);
             var windowSize = new Windows.Graphics.SizeInt32(
-                (int)(controller.Canvas.Width * displayInfo.RawPixelsPerViewPixel),
-                (int)(controller.Canvas.Height * displayInfo.RawPixelsPerViewPixel));
+                (int)(controller.CanvasWidth * displayInfo.RawPixelsPerViewPixel),
+                (int)(controller.CanvasHeight * displayInfo.RawPixelsPerViewPixel));
             controllerWindow.AppWindow.ResizeClient(windowSize);
 
             controllerWindow.Activate();

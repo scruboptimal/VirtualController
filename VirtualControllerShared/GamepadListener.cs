@@ -8,12 +8,12 @@ namespace VirtualControllerShared
     public class GamepadListener : IGamepadEventHandler
     {
         private IGamepadListener m_listener;
-        private GamepadEventHandler m_handler;
         private int m_index;
 
-        public GamepadListener(GamepadEventHandler handler, int index)
+        public event GamepadEventHandler? OnGamepadEvent;
+
+        public GamepadListener(int index)
         {
-            m_handler = handler;
             m_index = index;
             NativeMethods.CreateGamepadListener(out m_listener);
         }
@@ -30,7 +30,7 @@ namespace VirtualControllerShared
 
         public void HandleGamepadState(GamepadButton state, int frameIndex)
         {
-            m_handler(state, frameIndex);
+            OnGamepadEvent?.Invoke(state, frameIndex);
         }
 
         static class NativeMethods

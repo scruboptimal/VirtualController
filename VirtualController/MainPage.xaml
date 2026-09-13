@@ -20,10 +20,9 @@
       <RowDefinition Height="*"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-    <ContentControl Grid.Row="0" Content="{Binding Controller.Canvas}"  />
+    <ContentControl Grid.Row="0" Content="{Binding Controller}"  />
     <Button Grid.Row="1" Content="Open Virtual Controller" Click="OpenVirtualController_Click" HorizontalAlignment="Center" />
-    <Button IsEnabled="{Binding Controller, Converter={StaticResource notNull}}" 
-            Content="{Binding IsRecording, Converter={StaticResource b2RecordStop}}" 
+    <Button Content="{Binding IsRecording, Converter={StaticResource b2RecordStop}}" 
             Grid.Row="2" Click="ToggleRecording_Click" HorizontalAlignment="Center" />
     <skia:SKXamlCanvas Grid.Row="3" x:Name="TimelineCanvas" Width="400" Height="256" PaintSurface="OnTimelinePaintSurface" />
   </Grid>

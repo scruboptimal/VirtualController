@@ -1,19 +1,28 @@
-﻿using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Xml;
 using VirtualControllerNative.Interop;
 using VirtualControllerShared;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI;
 
 namespace VirtualController
 {
-    public class VirtualController : IDisposable
+    public sealed partial class VirtualControllerDisplay : UserControl
     {
         static Dictionary<string, GamepadButton> buttonMappings = new Dictionary<string, GamepadButton>()
         {
@@ -36,24 +45,24 @@ namespace VirtualController
         static SolidColorBrush pressedBrush = new SolidColorBrush(Color.FromArgb(0xff, 0xff, 0xff, 0xff)); // white
         static List<GamepadButton> buttons = Enum.GetValues<GamepadButton>().OfType<GamepadButton>().Where(x => x != GamepadButton.None).ToList();
 
-        Dictionary<GamepadButton, Ellipse> controllerButtons = new();
-
-        public Canvas Canvas { get; private set; }
-
-        private bool disposedValue;
+        private Dictionary<GamepadButton, Ellipse> controllerButtons = new();
         private GamepadListener listener;
         private DispatcherQueue dispatcher;
 
-        public event EventHandler<(GamepadButton, int)>? ButtonsChanged;
+        public double CanvasWidth { get => this.Canvas.Width; }
+        public double CanvasHeight { get => this.Canvas.Height; }
 
-        public VirtualController(string svgPath)
+        public VirtualControllerDisplay(string svgPath, GamepadListener listener)
         {
-            listener = new GamepadListener(OnGamepadEvent, 0);
+            InitializeComponent();
 
-            XmlDocument xmlDoc = new();
+            this.listener = listener;
+            this.listener.OnGamepadEvent += this.OnGamepadEvent;
+
+            var xmlDoc = new XmlDocument();
             xmlDoc.Load(svgPath);
 
-            this.dispatcher = DispatcherQueue.GetForCurrentThread();
+            this.dispatcher = Windows.System.DispatcherQueue.GetForCurrentThread();
 
             var root = xmlDoc.DocumentElement;
             if (root == null)
@@ -67,21 +76,24 @@ namespace VirtualController
             double width = double.Parse(backgroundRectNode?.Attributes?.GetNamedItem("width")?.Value ?? "0");
             double height = double.Parse(backgroundRectNode?.Attributes?.GetNamedItem("height")?.Value ?? "0");
             byte[] canvasFill = SVGHelpers.GetFillArgb(backgroundRectNode);
-            this.Canvas = new Canvas()
-            {
-                Width = width,
-                Height = height,
-                Background = new SolidColorBrush(Color.FromArgb(canvasFill[0], canvasFill[1], canvasFill[2], canvasFill[3])),
-            };
 
+            this.Canvas.Width = width;
+            this.Canvas.Height = height;
+            this.Canvas.Background = new SolidColorBrush(Color.FromArgb(canvasFill[0], canvasFill[1], canvasFill[2], canvasFill[3]));
 
             XmlNode? buttonLayer = SVGHelpers.FindChild(root, "layerButtons");
-            if (buttonLayer == null) { throw new KeyNotFoundException(); }
+            if (buttonLayer == null)
+            {
+                throw new KeyNotFoundException();
+            }
             for (int i = 0; i < buttonLayer.ChildNodes.Count; i++)
             {
                 XmlNode? buttonNode = buttonLayer.ChildNodes[i];
                 string? buttonId = buttonNode?.Attributes?.GetNamedItem("id")?.Value;
-                if (buttonId == null) { throw new KeyNotFoundException(); }
+                if (buttonId == null)
+                {
+                    throw new KeyNotFoundException();
+                }
 
                 if (buttonMappings.TryGetValue(buttonId, out GamepadButton button))
                 {
@@ -110,7 +122,7 @@ namespace VirtualController
                 }
             }
 
-            this.listener.StartListening();
+            this.Content = this.Canvas;
         }
 
         void OnGamepadEvent(GamepadButton state, int frameIndex)
@@ -127,35 +139,6 @@ namespace VirtualController
                     controllerButton.Fill = state.HasFlag(button) ? pressedBrush : controllerButton.Stroke;
                 });
             }
-
-            ButtonsChanged?.Invoke(this, (state, frameIndex));
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects)
-                }
-
-                this.listener.StopListening();
-                disposedValue = true;
-            }
-        }
-
-        ~VirtualController()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }
