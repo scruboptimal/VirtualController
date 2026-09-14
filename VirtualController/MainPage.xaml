@@ -59,6 +59,16 @@
                 Click="PracticeRecording_Click"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center" />
+        <Button Content="Export"
+                Margin="8"
+                Click="Export_Click"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        <Button Content="Import"
+                Margin="8"
+                Click="Import_Click"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
       </StackPanel>
     </Grid>
   </Grid>

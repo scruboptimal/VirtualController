@@ -1,8 +1,7 @@
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting.AppContainer;
 using VirtualControllerShared;
 using VirtualControllerNative.Interop;
+using System.Text.Json;
 
 namespace VirtualControllerTests
 {
@@ -31,6 +30,21 @@ namespace VirtualControllerTests
 
             recording.AddState(10, GamepadButton.DPadDown);
             Assert.AreEqual(6, recording.FrameCount); // Frames 0-5 inc.
+        }
+
+        [TestMethod]
+        public void Serialization()
+        {
+            var r1 = new Recording();
+            r1.AddState(5, GamepadButton.DPadDown);
+
+            string json = JsonSerializer.Serialize(r1);
+            Assert.AreEqual(@"{""Frames"":[{""FrameIdx"":0,""State"":32}]}", json);
+
+            var r2 = JsonSerializer.Deserialize<Recording>(json);
+            Assert.IsNotNull(r2);
+            Assert.AreEqual(r1.FrameCount, r2.FrameCount);
+            Assert.AreEqual(r1.Frames[0], r2.Frames[0]);
         }
     }
 }

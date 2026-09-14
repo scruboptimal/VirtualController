@@ -1,13 +1,12 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.Windows.Storage.Pickers;
-using SkiaSharp;
-using SkiaSharp.Views.Windows;
 using System;
-using VirtualControllerNative.Interop;
+using System.IO;
+using System.Text.Json;
+using VirtualControllerShared;
 using Windows.Graphics.Display;
+using WinRT;
 
 namespace VirtualController
 {
@@ -89,7 +88,7 @@ namespace VirtualController
             this.ViewModel.ToggleRecording();
         }
 
-        private void PracticeRecording_Click(Object sender, RoutedEventArgs e)
+        private void PracticeRecording_Click(object sender, RoutedEventArgs e)
         {
             Window window = new Window()
             {
@@ -98,6 +97,45 @@ namespace VirtualController
             };
 
             window.Activate();
+        }
+
+        private async void Export_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.ViewModel.DisplayRecording == null)
+            {
+                return;
+            }
+
+            var picker = new FileSavePicker(this.owningWindow.AppWindow.Id)
+            {
+                DefaultFileExtension = ".json"
+            };
+
+            var result = await picker.PickSaveFileAsync();
+            if (result is null)
+            {
+                throw new Exception("No file selected");
+            }
+
+            string json = JsonSerializer.Serialize(this.ViewModel.DisplayRecording);
+            File.WriteAllText(result.Path, json);
+        }
+
+        private async void Import_Click(object sender, RoutedEventArgs e)
+        {
+            var picker = new FileOpenPicker(this.owningWindow.AppWindow.Id)
+            {
+                FileTypeFilter = { ".json" },
+            };
+
+            var result = await picker.PickSingleFileAsync();
+            if (result is null)
+            {
+                throw new Exception("No file selected");
+            }
+
+            string json = File.ReadAllText(result.Path);
+            this.ViewModel.DisplayRecording = JsonSerializer.Deserialize<Recording>(json);
         }
     }
 }
