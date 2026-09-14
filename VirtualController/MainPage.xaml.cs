@@ -88,5 +88,16 @@ namespace VirtualController
         {
             this.ViewModel.ToggleRecording();
         }
+
+        private void PracticeRecording_Click(Object sender, RoutedEventArgs e)
+        {
+            Window window = new Window()
+            {
+                Content = new ComboPlaybackPage(this.ViewModel.CreatePlaybackVM()),
+                Title = "Practice"
+            };
+
+            window.Activate();
+        }
     }
 }

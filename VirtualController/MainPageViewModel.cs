@@ -12,6 +12,7 @@ namespace VirtualController
 
         private GamepadListener gamepadListener;
         private RecordingManager? recordingManager;
+        private VirtualControllerData? controllerData;
 
         public MainPageViewModel()
         {
@@ -21,7 +22,8 @@ namespace VirtualController
 
         public void OpenController(string svgPath)
         {
-            this.Controller = new VirtualControllerDisplay(svgPath, this.gamepadListener);
+            this.controllerData = VirtualControllerData.LoadFromSvg(svgPath);
+            this.Controller = new VirtualControllerDisplay(this.controllerData, this.gamepadListener);
         }
 
         public void ToggleRecording()
@@ -42,6 +44,11 @@ namespace VirtualController
             }
 
             this.IsRecording = !this.IsRecording;
+        }
+
+        public ComboPlaybackPageViewModel CreatePlaybackVM()
+        {
+            return new ComboPlaybackPageViewModel(this.controllerData, this.DisplayRecording, this.gamepadListener);
         }
     }
 }
