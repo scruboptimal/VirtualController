@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 /VirtualControllerShared/VirtualControllerNative.Interop.dll
+/VirtualController/Properties/launchSettings.json

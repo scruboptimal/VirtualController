@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "VirtualController": {
-      "commandName": "Project",
-      "debugEngines": "managed,native"
-    }
-  }
-}
