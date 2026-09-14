@@ -23,7 +23,7 @@ namespace VirtualControllerShared
                 throw new InvalidOperationException();
             }
 
-            XmlNode? backgroundLayerNode = SVGHelpers.FindChild(root, "layerBackground");
+            XmlNode? backgroundLayerNode = SVGHelpers.FindChild(root, "layerBackground"); 
             XmlNode? backgroundRectNode = SVGHelpers.FindChild(backgroundLayerNode, "background");
 
             double width = double.Parse(backgroundRectNode?.Attributes?.GetNamedItem("width")?.Value ?? "0");
