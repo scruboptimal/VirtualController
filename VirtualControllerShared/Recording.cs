@@ -1,4 +1,6 @@
-﻿using VirtualControllerNative.Interop;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using VirtualControllerNative.Interop;
 
 namespace VirtualControllerShared
 {
@@ -9,6 +11,7 @@ namespace VirtualControllerShared
         private List<RecordingFrame> frames = new List<RecordingFrame>();
         private int firstFrameIndex = 0;
 
+        [JsonIgnore]
         public int FrameCount
         {
             get
