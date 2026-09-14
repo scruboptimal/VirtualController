@@ -47,18 +47,16 @@ namespace VirtualController
 
             this.Canvas.Width = this.controllerData.Width;
             this.Canvas.Height = this.controllerData.Height;
-            var color = this.controllerData.Background;
-            this.Canvas.Background = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+            this.Canvas.Background = Helpers.GetBrushForColor(this.controllerData.Background);
             foreach (var button in this.controllerData.Buttons)
             {
-                var fillColor = button.Color;
-                var brush = new SolidColorBrush(Color.FromArgb(fillColor.A, fillColor.R, fillColor.G, fillColor.B));
+                var brush = Helpers.GetBrushForColor(button.Color);
                 Ellipse e = new()
                 {
                     Width = button.R * 2,
                     Height = button.R * 2,
-                    Fill = fillColor,
-                    Stroke = fillColor,
+                    Fill = brush,
+                    Stroke = brush,
                 };
                 Canvas.SetLeft(e, button.X - button.R);
                 Canvas.SetTop(e, button.Y - button.R);

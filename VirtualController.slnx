@@ -8,6 +8,7 @@
   </Project>
   <Project Path="VirtualControllerNative/VirtualControllerNative.vcxproj" Id="996ae6d9-e841-4911-b992-02bd9f9711ad" />
   <Project Path="VirtualControllerShared/VirtualControllerShared.csproj" Id="bde3c609-04d9-475f-9954-a9818c50a22e">
+    <BuildDependency Project="VirtualControllerNative/VirtualControllerNative.vcxproj" />
     <Platform Project="x64" />
     <Build Solution="Release|*" Project="false" />
   </Project>

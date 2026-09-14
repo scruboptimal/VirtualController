@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using VirtualControllerShared;
 
 namespace VirtualController
@@ -48,6 +49,12 @@ namespace VirtualController
 
         public ComboPlaybackPageViewModel CreatePlaybackVM()
         {
+            if (this.controllerData == null || 
+                this.DisplayRecording == null)
+            {
+                throw new InvalidOperationException();
+            }
+
             return new ComboPlaybackPageViewModel(this.controllerData, this.DisplayRecording, this.gamepadListener);
         }
     }
